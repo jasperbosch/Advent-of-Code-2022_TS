@@ -102,35 +102,36 @@ content.forEach(row => {
 
 const inspections: number[] = [0, 0, 0, 0, 0, 0, 0, 0];
 
-// for (let round = 0; round < 10000; round++) {
-for (let round = 0; round < 20; round++) {
+for (let round = 0; round < 2000; round++) {
+// for (let round = 0; round < 20; round++) {
     monkeys.forEach(monkey => {
         // console.log('Round ', round, monkey.id, monkey.items);
-        console.log('Monkey ', monkey.id)
+        // console.log('Monkey ', monkey.id)
         const numberOfItems = monkey.items.length;
         for (let x = 0; x < numberOfItems; x++) {
             inspections[monkey.id]++;
             const item = monkey.items[0];
-            console.log('  Monkey inspects an item with a worry level of ', item);
+            // console.log('  Monkey inspects an item with a worry level of ', item);
             let worryLevel: bigint = getWorryLevel(item, monkey.operation);
-            console.log(`    Worry level is multipied by ? to ${worryLevel}`);
+            // console.log(`    Worry level is multipied by ? to ${worryLevel}`);
             // worryLevel = Math.floor(worryLevel / 3);
             // console.log(`    Monkey gets bored with item. Worry level is diveded by 3 to ${worryLevel}`);
-            if (worryLevel % BigInt(monkey.test.divisible) === 0) {
-                console.log(`    Current worry level is divisible by ${monkey.test.divisible}`);
-                console.log(`    Item with worry level ${worryLevel} is thrown to monkey ${monkey.test.trueThrowTo}`);
+            if (worryLevel % BigInt(monkey.test.divisible) === 0n) {
+                // console.log(`    Current worry level is divisible by ${monkey.test.divisible}`);
+                // console.log(`    Item with worry level ${worryLevel} is thrown to monkey ${monkey.test.trueThrowTo}`);
                 monkeys[monkey.test.trueThrowTo].items.push(worryLevel);
             } else {
-                console.log(`    Current worry level is not divisible by ${monkey.test.divisible}`);
-                console.log(`    Item with worry level ${worryLevel} is thrown to monkey ${monkey.test.falseThrowTo}`);
+                // console.log(`    Current worry level is not divisible by ${monkey.test.divisible}`);
+                // console.log(`    Item with worry level ${worryLevel} is thrown to monkey ${monkey.test.falseThrowTo}`);
                 monkeys[monkey.test.falseThrowTo].items.push(worryLevel);
             }
             monkey.items.shift();
         }
     })
-    console.log(round, inspections);
+    // console.log(round, inspections);
     // console.log(round, monkeys);
 }
+console.log(inspections);
 
 // console.log(inspections)
 const sortedInspections = inspections.sort((a, b) => (a > b) ? -1 : (b > a) ? 1 : 0);
