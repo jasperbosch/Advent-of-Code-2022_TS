@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 
 // const bigInt = require('big-integer');
-import * as bigInt from 'big-integer';
+// import * as bigInt from 'big-integer';
 
 class Monkey {
     id?: number;
-    items?: bigInt.BigInteger[];
+    items?: bigint[];
     operation?: string;
     test?: {
         divisible?: number;
@@ -29,21 +29,21 @@ const content = contentBuffer.toString().split('\r\n');
 
 // content.pop();
 
-function getWorryLevel(old: bigInt.BigInteger, operation: string): bigInt.BigInteger {
+function getWorryLevel(old: bigint, operation: string): bigint {
     const parts = operation.split(' ');
-    let x: bigInt.BigInteger;
-    let newValue:bigInt.BigInteger = bigInt(0);
+    let x: bigint;
+    let newValue: bigint = 0n;
     if (parts[4] === 'old') {
         x = old;
     } else {
-        x = bigInt(parts[4]);
+        x = BigInt(parts[4]);
     }
     switch (parts[3]) {
         case '+':
-            newValue = old.add(x);
+            newValue = old + x;
             break;
         case '*':
-            newValue = old.multiply(x);
+            newValue = old * x;
             break;
         default:
             console.error('Wrong operator', operation);
@@ -51,9 +51,9 @@ function getWorryLevel(old: bigInt.BigInteger, operation: string): bigInt.BigInt
     return newValue;
 }
 
-function modulo (n, p, m){
+function modulo(n, p, m) {
     var result = 1;
-    while(p--) {
+    while (p--) {
         result = (result * n) % m;
     }
 
@@ -70,7 +70,7 @@ content.forEach(row => {
             monkey.id = parseInt(row.substring(7, 8));
             break;
         case 'Starting':
-            monkey.items = row.substring(18).split(', ').map(value => bigInt(value));
+            monkey.items = row.substring(18).split(', ').map(value => BigInt(value));
             break;
         case 'Operation:':
             monkey.operation = row.substring(13);
@@ -100,7 +100,7 @@ content.forEach(row => {
 });
 // console.log('Initial', monkeys);
 
-const inspections:number[]=[0,0,0,0,0,0,0,0];
+const inspections: number[] = [0, 0, 0, 0, 0, 0, 0, 0];
 
 // for (let round = 0; round < 10000; round++) {
 for (let round = 0; round < 20; round++) {
@@ -112,11 +112,11 @@ for (let round = 0; round < 20; round++) {
             inspections[monkey.id]++;
             const item = monkey.items[0];
             console.log('  Monkey inspects an item with a worry level of ', item);
-            let worryLevel:bigInt.BigInteger = getWorryLevel(item, monkey.operation);
+            let worryLevel: bigint = getWorryLevel(item, monkey.operation);
             console.log(`    Worry level is multipied by ? to ${worryLevel}`);
             // worryLevel = Math.floor(worryLevel / 3);
             // console.log(`    Monkey gets bored with item. Worry level is diveded by 3 to ${worryLevel}`);
-            if (worryLevel.mod(monkey.test.divisible) === bigInt(0)) {
+            if (worryLevel % BigInt(monkey.test.divisible) === 0) {
                 console.log(`    Current worry level is divisible by ${monkey.test.divisible}`);
                 console.log(`    Item with worry level ${worryLevel} is thrown to monkey ${monkey.test.trueThrowTo}`);
                 monkeys[monkey.test.trueThrowTo].items.push(worryLevel);
@@ -129,8 +129,9 @@ for (let round = 0; round < 20; round++) {
         }
     })
     console.log(round, inspections);
+    // console.log(round, monkeys);
 }
 
 // console.log(inspections)
-const sortedInspections=inspections.sort((a,b)=>(a>b)?-1:(b>a)?1:0);
-console.log(sortedInspections[0]*sortedInspections[1]);
+const sortedInspections = inspections.sort((a, b) => (a > b) ? -1 : (b > a) ? 1 : 0);
+console.log(sortedInspections[0] * sortedInspections[1]);
